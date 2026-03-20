@@ -12,7 +12,7 @@ public:
     DynamicArray(int initialCapacity = 4);
     DynamicArray(const DynamicArray& other);
     ~DynamicArray();
- 
+
     int get(int index) const;
 
     void addAt(int index, int value);

@@ -4,7 +4,7 @@ struct Node {
     int value;
     Node* next;
 
-    Node(int, val) : value(val), next(nullptr) {}
+    Node(int val) : value(val), next(nullptr) {}
 };
 
 class SingleLinkedList {
@@ -31,4 +31,4 @@ public:
     int find(int value) const;
 
     int getSize() const;
-}
+};

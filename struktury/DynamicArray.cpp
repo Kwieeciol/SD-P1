@@ -23,6 +23,14 @@ public:
         data = new int[capacity];
     };
 
+    DynamicArray(const DynamicArray& other) {
+        size = other.size;
+        capacity = other.capacity;
+        data = new int[capacity];
+        for (int i = 0; i < size; i++)
+            data[i] = other.data[i];
+    }
+
     ~DynamicArray() {
         delete[] data;
     };
@@ -33,7 +41,7 @@ public:
         return data[index];
     };
 
-    void insert(int index, int value) {
+    void addAt(int index, int value) {
         if (index < 0 || index > size)
             throw std::out_of_range("Index out of range");
         if (size == capacity)
@@ -44,12 +52,12 @@ public:
         size++;
     };
 
-    void pushFront(int value) {
-        insert(0, value);
+    void addFront(int value) {
+        addAt(0, value);
     };
 
-    void pushBack(int value) {
-        insert(size, value);
+    void addBack(int value) {
+        addAt(size, value);
     };
 
     void removeAt(int index) {
@@ -60,15 +68,15 @@ public:
         size--;
     };
 
-    void popFront() {
+    void removeFront() {
         removeAt(0);
     };
 
-    void popBack() {
+    void removeBack() {
         removeAt(size - 1);
     };
 
-    int search(int value) const {
+    int find(int value) const {
         for (int i = 0; i < size; i++)
             if (data[i] == value)
                 return i;

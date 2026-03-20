@@ -10,17 +10,18 @@ private:
 
 public:
     DynamicArray(int initialCapacity = 4);
+    DynamicArray(const DynamicArray& other);
     ~DynamicArray();
-
+ 
     int get(int index) const;
 
-    void insert(int index, int value);
-    void pushFront(int value);
-    void pushBack(int value);
+    void addAt(int index, int value);
+    void addFront(int value);
+    void addBack(int value);
 
     void removeAt(int index);
-    void popFront();
-    void popBack();
+    void removeFront();
+    void removeBack();
 
-    int search(int value) const;
+    int find(int value) const;
 };

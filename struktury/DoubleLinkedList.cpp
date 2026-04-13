@@ -1,5 +1,6 @@
-﻿#include "DoubleLinkedList.h"
+#include "DoubleLinkedList.h"
 #include <stdexcept>
+#include <iostream>
 
 DoubleLinkedList::DoubleLinkedList() : header(nullptr), trailer(nullptr), size(0) {}
 
@@ -54,27 +55,27 @@ void DoubleLinkedList::addAt(int index, int value) {
         addBack(value);
     }
     else {
-        Node* newNode = new Node(value);
         Node* current;
 
         // Wybór kierunku przeszukiwania
         if (index < size / 2) {
             // Idziemy od początku
             current = header;
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < index - 1; i++) {
                 current = current->next;
             }
         }
         else {
             // Idziemy od końca
             current = trailer;
-            for (int i = size - 1; i > index; i--) {
+            for (int i = size - 1; i > index - 1; i--) {
                 current = current->prev;
             }
         }
 
-        newNode->prev = current->prev;
+        Node* newNode = new Node(value);
         newNode->next = current;
+        newNode->prev = current->prev;
         current->prev->next = newNode;
         current->prev = newNode;
         size++;
@@ -126,13 +127,13 @@ void DoubleLinkedList::removeAt(int index) {
         //  Wybór kierunku przeszukiwania
         if (index < size / 2) {
             current = header;
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < index - 1; i++) {
                 current = current->next;
             }
         }
         else {
             current = trailer;
-            for (int i = size - 1; i > index; i--) {
+            for (int i = size - 1; i > index - 1; i--) {
                 current = current->prev;
             }
         }
@@ -148,7 +149,7 @@ void DoubleLinkedList::removeAt(int index) {
 
 int DoubleLinkedList::find(int value) const {
     Node* current = header;
-    int index = 0;
+    int index = 1;
     while (current != nullptr) {
         if (current->value == value) return index;
         current = current->next;
@@ -159,4 +160,25 @@ int DoubleLinkedList::find(int value) const {
 
 int DoubleLinkedList::getSize() const {
     return size;
+}
+
+void DoubleLinkedList::display() const {
+    if (size == 0 || header == nullptr) {
+        std::cout << "Lista jest pusta." << std::endl;
+        return;
+    }
+    Node* curr = header;
+
+    std::cout << "Zawartosc listy (rozmiar: " << size << "):" << std::endl;
+
+    while (curr != nullptr) {
+        std::cout << curr->value;
+
+        if (curr->next != nullptr) {
+            std::cout << ", ";
+        }
+
+        curr = curr->next;
+    }
+    std::cout << std::endl;
 }

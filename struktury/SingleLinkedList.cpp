@@ -15,7 +15,7 @@ SingleLinkedList::SingleLinkedList(const SingleLinkedList& other) : head(nullptr
 SingleLinkedList::~SingleLinkedList() {
     Node* curr = head;
     while (curr != nullptr) {
-        Node* next = curr->next;
+        Node* next = curr->next; // Zapamiętaj następny przed usunięciem
         delete curr;
         curr = next;
     }
@@ -49,6 +49,7 @@ void SingleLinkedList::addAt(int index, int value) {
     if (index == 0) { addFront(value); return; }
     if (index == size) { addBack(value); return; }
 
+    // Przechodzenie do węzła poprzedzającego docelową pozycję
     Node* curr = head;
     for (int i = 0; i < index - 1; i++)
         curr = curr->next;
@@ -63,19 +64,21 @@ void SingleLinkedList::removeFront() {
     if (head == nullptr) return;
     Node* temp = head;
     head = head->next;
-    if (head == nullptr) tail = nullptr;
+    if (head == nullptr) tail = nullptr; // Lista jest pusta
     delete temp;
     size--;
 }
 
 void SingleLinkedList::removeBack() {
     if (head == nullptr) return;
-    if (head == tail) {
+    if (head == tail) { // Jeden element
         delete head;
         head = tail = nullptr;
         size--;
         return;
     }
+
+    // Przechodzenie do węzła przed końcem
     Node* curr = head;
     while (curr->next != tail)
         curr = curr->next;
@@ -91,6 +94,7 @@ void SingleLinkedList::removeAt(int index) {
     if (index == 0) { removeFront(); return; }
     if (index == size - 1) { removeBack(); return; }
 
+    // Przechodzenie do węzła poprzedzającego i usuwanie go
     Node* curr = head;
     for (int i = 0; i < index - 1; i++)
         curr = curr->next;
@@ -109,7 +113,7 @@ int SingleLinkedList::find(int value) const {
         curr = curr->next;
         index++;
     }
-    return -1;
+    return -1; // Nie znaleziono
 }
 
 int SingleLinkedList::getSize() const {

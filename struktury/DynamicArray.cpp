@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 
+// Podwaja pojemność tablicy i kopiuje istniejące elementy
 void DynamicArray::resize() {
     int newCapacity = capacity * 2;
     int* newData = new int[newCapacity];
@@ -41,6 +42,7 @@ void DynamicArray::addAt(int index, int value) {
         throw std::out_of_range("Index out of range");
     if (size == capacity)
         resize();
+    // Przesuwanie elementów w prawo aby zrobić miejsce
     for (int i = size; i > index; i--)
         data[i] = data[i - 1];
     data[index] = value;
@@ -58,6 +60,7 @@ void DynamicArray::addBack(int value) {
 void DynamicArray::removeAt(int index) {
     if (index < 0 || index >= size)
         throw std::out_of_range("Index out of range");
+    // Przesuwanie elementów w lewo nadpisując usuwany element
     for (int i = index; i < size - 1; i++)
         data[i] = data[i + 1];
     size--;
@@ -75,7 +78,7 @@ int DynamicArray::find(int value) const {
     for (int i = 0; i < size; i++)
         if (data[i] == value)
             return i;
-    return -1;
+    return -1; // Nie znaleziono    
 }
 
 void DynamicArray::display() const {

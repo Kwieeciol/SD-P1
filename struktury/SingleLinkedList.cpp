@@ -1,5 +1,6 @@
 #include "SingleLinkedList.h"
 #include <stdexcept>
+#include <iostream>
 
 SingleLinkedList::SingleLinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
@@ -113,4 +114,15 @@ int SingleLinkedList::find(int value) const {
 
 int SingleLinkedList::getSize() const {
     return size;
+}
+
+void SingleLinkedList::display() const {
+    std::cout << "{";
+    Node* curr = head;
+    while (curr != nullptr) {
+        std::cout << curr->value;
+        if (curr->next != nullptr) std::cout << ", ";
+        curr = curr->next;
+    }
+    std::cout << "}" << std::endl;
 }

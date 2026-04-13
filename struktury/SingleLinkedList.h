@@ -27,6 +27,8 @@ public:
     void removeFront();
     void removeBack();
     void removeAt(int index);
+    
+    void display() const;
 
     int find(int value) const;
 

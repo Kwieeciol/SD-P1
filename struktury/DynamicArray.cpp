@@ -1,5 +1,6 @@
 #include "DynamicArray.h"
 #include <stdexcept>
+#include <iostream>
 
 void DynamicArray::resize() {
     int newCapacity = capacity * 2;
@@ -75,4 +76,17 @@ int DynamicArray::find(int value) const {
         if (data[i] == value)
             return i;
     return -1;
+}
+
+void DynamicArray::display() const {
+    std::cout << "{";
+    for (int i = 0; i < size; i++) {
+        std::cout << data[i];
+        if (i < size - 1) std::cout << ", ";
+    }
+    std::cout << "}" << std::endl;
+}
+
+int DynamicArray::getSize() {
+    return size;
 }

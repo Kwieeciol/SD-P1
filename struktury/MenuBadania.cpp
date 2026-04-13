@@ -183,12 +183,12 @@ void structureMenu(std::string name) {
             }
             break;
         }
-        /*case 6:
+        case 6:
             std::cout << "Aktualny rozmiar struktury: " << ds->getSize() << std::endl;
             break;
         case 7:
             ds->display();
-            break;*/
+            break;
         case 0:
             break;
         default:

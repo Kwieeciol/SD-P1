@@ -1,15 +1,15 @@
 #pragma once
 
-struct Node {
-    int value;
-    Node* prev;
-    Node* next;
-
-    Node(int val) : value(val), prev(nullptr), next(nullptr) {}
-};
-
 class DoubleLinkedList {
 private:
+    struct Node {
+        int value;
+        Node* prev;
+        Node* next;
+
+        Node(int val) : value(val), prev(nullptr), next(nullptr) {}
+    };
+
     Node* header;
     Node* trailer;
     int size;
@@ -31,4 +31,5 @@ public:
     int find(int value) const;
 
     int getSize() const;
+    void display() const;
 };

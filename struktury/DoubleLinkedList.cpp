@@ -67,14 +67,14 @@ void DoubleLinkedList::addAt(int index, int value) {
         if (index < size / 2) {
             // Idziemy od początku
             current = header;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 0; i < index; i++) {
                 current = current->next;
             }
         }
         else {
             // Idziemy od końca
             current = trailer;
-            for (int i = size - 1; i > index - 1; i--) {
+            for (int i = size - 1; i > index; i--) {
                 current = current->prev;
             }
         }
@@ -137,13 +137,13 @@ void DoubleLinkedList::removeAt(int index) {
         //  Wybór kierunku przeszukiwania
         if (index < size / 2) {
             current = header;
-            for (int i = 0; i < index - 1; i++) {
+            for (int i = 0; i < index; i++) {
                 current = current->next;
             }
         }
         else {
             current = trailer;
-            for (int i = size - 1; i > index - 1; i--) {
+            for (int i = size - 1; i > index; i--) {
                 current = current->prev;
             }
         }
@@ -178,7 +178,7 @@ void DoubleLinkedList::display() const {
         return;
     }
     Node* curr = header;
-    std::cout << "Zawartosc listy (rozmiar: " << size << "):" << std::endl;
+    std::cout << "Zawartosc listy: ";
     // Przechodzenie przez liste od headera i wyświetlanie po kolei każdej wartości
     while (curr != nullptr) {
         std::cout << curr->value;

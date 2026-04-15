@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <chrono>
 #include <cstdlib>
 #include <iomanip>
@@ -113,10 +113,11 @@ template <typename T>
 void structureMenu(std::string name) {
     T* ds = new T();
     int choice = -1;
-
+    std::cout << std::endl;
     while (choice != 0) {
-        std::cout << "\n--- MENU: " << name << " ---" << std::endl;
-        std::cout << "1. Zbuduj z pliku\n2. Utworz losowo\n3. Dodaj\n4. Usun\n5. Znajdz\n6. Wyswietl rozmiar\n7. Wyswietl zawartosc\n0. Powrot\nWybor: ";
+        std::cout << "\n--- MENU: " << name << " ---" << std::endl; 
+        std::cout << "1. Zbuduj z pliku\n2. Wypelnij strukture\n3. Dodaj\n4. Usun\n5. Znajdz\n6. Wyswietl rozmiar\n" 
+                  << "7. Wyswietl zawartosc\n8. Wyczysc strukture\n0. Powrot\nWybor: ";
 
         if (!(std::cin >> choice)) {
             std::cin.clear();
@@ -135,33 +136,48 @@ void structureMenu(std::string name) {
                 int val;
                 while (file >> val) ds->addBack(val);
                 file.close();
-                std::cout << "Wczytano." << std::endl;
+                std::system("cls");
+                std::cout << "Wczytano dane z pliku: " << path << std::endl;
             }
-            else std::cout << "Blad pliku!" << std::endl;
+            else {
+                std::system("cls");
+                std::cout << "Blad pliku!" << std::endl; 
+            }
             break;
         }
         case 2: {
-            int n; std::cout << "Ile elementow? "; std::cin >> n;
+            int n; std::cout << "Podaj ilosc elementow: "; std::cin >> n;
             delete ds; ds = new T();
             for (int i = 0; i < n; i++) ds->addBack(rand() % 100000);
-            std::cout << "Utworzono losowo." << std::endl;
+            std::system("cls");
+            std::cout << "Wypelnianie zakonczone. Ilosc dodanych elementow: " << n << std::endl;
             break;
         }
         case 3: {
             int val, pos, sub;
-            std::cout << "1.Front 2.Back 3.Pozycja: "; std::cin >> sub;
+            std::cout << "\n\n--- Dodawanie: " << name << " ---" << std::endl;
+            std::cout << "1. Front\n2. Back\n3. Wybrana pozycja\nWybor: "; std::cin >> sub;
             std::cout << "Wartosc: "; std::cin >> val;
             if (sub == 1) ds->addFront(val);
             else if (sub == 2) ds->addBack(val);
-            else { std::cout << "Pozycja: "; std::cin >> pos; ds->addAt(pos, val); }
+            else { std::cout << "Pozycja: "; std::cin >> pos; ds->addAt(pos - 1, val); }
+            std::system("cls");
+            if (sub == 1) std::cout << "Dodano '" << val << "' na poczatek struktury" << std::endl;
+            else if (sub == 2) std::cout << "Dodano '" << val << "' na koniec struktury" << std::endl; 
+            else { std::cout << "Dodano '" << val << "' na pozycje " << pos << std::endl; }
             break;
         }
         case 4: {
             int pos, sub;
-            std::cout << "1.Front 2.Back 3.Pozycja: "; std::cin >> sub;
+            std::cout << "\n--- Usuwanie: " << name << " ---" << std::endl;
+            std::cout << "1. Front\n2. Back\n3. Wybrana pozycja\nWybor: "; std::cin >> sub;
             if (sub == 1) ds->removeFront();
             else if (sub == 2) ds->removeBack();
-            else { std::cout << "Pozycja: "; std::cin >> pos; ds->removeAt(pos); }
+            else { std::cout << "Pozycja: "; std::cin >> pos; ds->removeAt(pos - 1); }
+            std::system("cls");
+            if (sub == 1) std::cout << "Usunieto pierwszy element struktury" << std::endl;
+            else if (sub == 2) std::cout << "Usunieto ostatni element struktury" << std::endl;
+            else { std::cout << "Usunieto element z pozycji: " << pos << std::endl; }
             break;
         }
         case 5: {
@@ -173,8 +189,8 @@ void structureMenu(std::string name) {
                 break;
             }
 
-            int position = ds->find(val); 
-
+            int position = ds->find(val);
+            std::system("cls");
             if (position != -1) {
                 std::cout << "Znaleziono wartosc " << val << " na pozycji: " << position << std::endl;
             }
@@ -184,15 +200,24 @@ void structureMenu(std::string name) {
             break;
         }
         case 6:
-            std::cout << "Aktualny rozmiar struktury: " << ds->getSize() << std::endl;
-            break;
+            if (ds->getSize() == 0) std::cout << "Struktura jest pusta" << std::endl;
+            else {
+                std::cout << "Aktualny rozmiar struktury: " << ds->getSize() << std::endl;
+                break;
+            }
         case 7:
             ds->display();
             break;
+        case 8:
+            if (ds->getSize() == 0) std::cout << "Struktura jest pusta" << std::endl;
+            else {
+                delete ds; ds = new T();
+                std::cout << "Struktura zostala wyczyszczona" << std::endl;
+            }
         case 0:
             break;
         default:
-            std::cout << "Niepoprawny wybor." << std::endl;
+            std::cout << "Niepoprawny wybor.";
             break;
         }
     }
@@ -202,7 +227,7 @@ void structureMenu(std::string name) {
 int main() {
     const unsigned int seeds[10] = { 12345, 67890, 11223, 44556, 77889, 99001, 13579, 24680, 98765, 54321 };
     int mainChoice = -1;
-
+    std::cout << std::endl;
     while (mainChoice != 0) {
         std::cout << "\n========== MENU GLOWNE ==========" << std::endl;
         std::cout << "1. Tablica Dynamiczna" << std::endl;
@@ -218,6 +243,7 @@ int main() {
             std::cin.clear();
             while (std::cin.get() != '\n');
             mainChoice = -1; // Wartosc neutralna, aby menu wyswietlilo sie ponownie
+            std::system("cls");
             continue;
         }
         std::system("cls");

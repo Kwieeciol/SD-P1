@@ -18,7 +18,7 @@ enum Operation {
 };
 
 // Pomocnicza funkcja do nazewnictwa plików i komunikatów
-std::string getOpName(Operation op) {
+std::string operacja(Operation op) {
     switch (op) {
     case ADD_FRONT: return "Add_Front";
     case ADD_BACK: return "Add_Back";
@@ -38,10 +38,9 @@ void generateTextFile(unsigned int seed, int size, std::string fileName) {
         std::cout << "Blad: Nie mozna utworzyc pliku!" << std::endl;
         return;
     }
-
+    // Inicjalizacja generatora liczb losowych z danym seedem
     srand(seed);
     for (int i = 0; i < size; i++) {
-        // Generujemy liczbe calkowita (int - 4 bajty)
         int val = rand() % 100000;
         file << val << (i == size - 1 ? "" : " ");
     }
@@ -50,7 +49,7 @@ void generateTextFile(unsigned int seed, int size, std::string fileName) {
     std::cout << "Wygenerowano plik '" << fileName << "' (" << size << " liczb)." << std::endl;
 }
 
-// Funkcja pomiarowa dla automatycznych testów
+// Funkcja mierząca czas wykonania konkretnej operacji
 template <typename T>
 long long measure(int size, Operation op, unsigned int seed, int repetitions) {
     long long totalDuration = 0;
@@ -62,9 +61,9 @@ long long measure(int size, Operation op, unsigned int seed, int repetitions) {
 
         int randomIndex = (size > 0) ? rand() % size : 0;
         int val = rand() % 100000;
-
+        // Start stopera 
         auto start = std::chrono::high_resolution_clock::now();
-
+        // Wykonanie danej operacji
         if (op == ADD_FRONT) ds.addFront(val);
         else if (op == ADD_BACK) ds.addBack(val);
         else if (op == ADD_AT) ds.addAt(randomIndex, val);
@@ -72,35 +71,38 @@ long long measure(int size, Operation op, unsigned int seed, int repetitions) {
         else if (op == REMOVE_BACK) ds.removeBack();
         else if (op == REMOVE_AT) ds.removeAt(randomIndex);
         else if (op == FIND) ds.find(val);
-
+        // Stop stopera 
         auto end = std::chrono::high_resolution_clock::now();
+        // Obliczanie czasu w nanosekundach i dodawanie do sumy
         totalDuration += std::chrono::duration_cast<std::chrono::nanoseconds>(end - start).count();
     }
+    // Zwracanie średniego czasu z wykonanych powtórzeń
     return totalDuration / repetitions;
 }
 
-// Automatyczne generowanie wszystkich raportów CSV
-void runFullReport(const unsigned int seeds[10]) {
+// Funkcja przeprowadzająca całą serię testów porównawczych i zapisująca je do plików CSV
+void wszystkieBadania(const unsigned int seeds[10]) {
     std::vector<Operation> ops = { ADD_FRONT, ADD_BACK, ADD_AT, REMOVE_FRONT, REMOVE_BACK, REMOVE_AT, FIND };
 
-    std::cout << "\nRozpoczynam pelne badania (8 krokow x 10 seedow x 10 powtorzen)..." << std::endl;
+    std::cout << "\nRozpoczecie badan" << std::endl;
 
     for (auto op : ops) {
-        std::string fileName = "porownanie_" + getOpName(op) + ".csv";
+        std::string fileName = "porownanie_" + operacja(op) + ".csv";
         std::ofstream file(fileName);
         file << "Rozmiar;DynamicArray [ns];SingleList [ns];DoubleList [ns]\n";
 
-        std::cout << "Badanie: " << getOpName(op) << " -> " << fileName << std::endl;
-
+        std::cout << "Badanie: " << operacja(op) << " -> " << fileName << std::endl;
+        // Wykonywanie badań dla wszystkich rozmiarów
         for (int i = 1; i <= 8; i++) {
             int N = i * 5000;
             long long avgArr = 0, avgSing = 0, avgDoub = 0;
-
+            // Pętla przechodząca przez wszystkie seedy
             for (int s = 0; s < 10; s++) {
                 avgArr += measure<DynamicArray>(N, op, seeds[s], 10);
                 avgSing += measure<SingleLinkedList>(N, op, seeds[s], 10);
                 avgDoub += measure<DoubleLinkedList>(N, op, seeds[s], 10);
             }
+            // Zapis wyników do pliku
             file << N << ";" << avgArr / 10 << ";" << avgSing / 10 << ";" << avgDoub / 10 << "\n";
         }
         file.close();
@@ -108,7 +110,7 @@ void runFullReport(const unsigned int seeds[10]) {
     std::cout << "Wszystkie raporty zostaly wygenerowane pomyslnie.\n";
 }
 
-// Menu dla pojedynczej struktury
+// Menu dla danej struktury
 template <typename T>
 void structureMenu(std::string name) {
     T* ds = new T();
@@ -118,7 +120,7 @@ void structureMenu(std::string name) {
         std::cout << "\n--- MENU: " << name << " ---" << std::endl; 
         std::cout << "1. Zbuduj z pliku\n2. Wypelnij strukture\n3. Dodaj\n4. Usun\n5. Znajdz\n6. Wyswietl rozmiar\n" 
                   << "7. Wyswietl zawartosc\n8. Wyczysc strukture\n0. Powrot\nWybor: ";
-
+        // Zabezpieczenie przed wpisaniem znaku zamiast liczby
         if (!(std::cin >> choice)) {
             std::cin.clear();
             while (std::cin.get() != '\n');
@@ -127,12 +129,12 @@ void structureMenu(std::string name) {
         }
         std::system("cls");
         switch (choice) {
-        case 1: {
+        case 1: { // Wczytywanie danych z pliku tekstowego
             std::string path;
             std::cout << "Podaj nazwe pliku: "; std::cin >> path;
             std::ifstream file(path);
             if (file.is_open()) {
-                delete ds; ds = new T();
+                delete ds; ds = new T(); // Reset struktury przed wczytaniem
                 int val;
                 while (file >> val) ds->addBack(val);
                 file.close();
@@ -145,7 +147,7 @@ void structureMenu(std::string name) {
             }
             break;
         }
-        case 2: {
+        case 2: { // Wypełnianie struktury określoną liczbą losowych elementów
             int n; std::cout << "Podaj ilosc elementow: "; std::cin >> n;
             delete ds; ds = new T();
             for (int i = 0; i < n; i++) ds->addBack(rand() % 100000);
@@ -153,21 +155,23 @@ void structureMenu(std::string name) {
             std::cout << "Wypelnianie zakonczone. Ilosc dodanych elementow: " << n << std::endl;
             break;
         }
-        case 3: {
+        case 3: { // Dodawanie elementu w wybrane miejsce
             int val, pos, sub;
             std::cout << "\n\n--- Dodawanie: " << name << " ---" << std::endl;
             std::cout << "1. Front\n2. Back\n3. Wybrana pozycja\nWybor: "; std::cin >> sub;
             std::cout << "Wartosc: "; std::cin >> val;
+
             if (sub == 1) ds->addFront(val);
             else if (sub == 2) ds->addBack(val);
             else { std::cout << "Pozycja: "; std::cin >> pos; ds->addAt(pos - 1, val); }
             std::system("cls");
+
             if (sub == 1) std::cout << "Dodano '" << val << "' na poczatek struktury" << std::endl;
             else if (sub == 2) std::cout << "Dodano '" << val << "' na koniec struktury" << std::endl; 
             else { std::cout << "Dodano '" << val << "' na pozycje " << pos << std::endl; }
             break;
         }
-        case 4: {
+        case 4: { // Usuwanie elementu z wybranego miejsca
             int pos, sub;
             std::cout << "\n--- Usuwanie: " << name << " ---" << std::endl;
             std::cout << "1. Front\n2. Back\n3. Wybrana pozycja\nWybor: "; std::cin >> sub;
@@ -180,7 +184,7 @@ void structureMenu(std::string name) {
             else { std::cout << "Usunieto element z pozycji: " << pos << std::endl; }
             break;
         }
-        case 5: {
+        case 5: { // Wyszukiwanie wartości
             int val;
             std::cout << "Podaj wartosc do znalezienia: ";
             if (!(std::cin >> val)) {
@@ -199,16 +203,16 @@ void structureMenu(std::string name) {
             }
             break;
         }
-        case 6:
+        case 6: // Wyświetlanie aktualnej liczby elementów
             if (ds->getSize() == 0) std::cout << "Struktura jest pusta" << std::endl;
             else {
                 std::cout << "Aktualny rozmiar struktury: " << ds->getSize() << std::endl;
                 break;
             }
-        case 7:
+        case 7: // Wyświetlanie zawartości struktury
             ds->display();
             break;
-        case 8:
+        case 8: // Wyczyszczenie całej struktury
             if (ds->getSize() == 0) std::cout << "Struktura jest pusta" << std::endl;
             else {
                 delete ds; ds = new T();
@@ -221,6 +225,7 @@ void structureMenu(std::string name) {
             break;
         }
     }
+    // Zwolnienie pamięci przed powrotem do menu głównego
     delete ds;
 }
 
@@ -238,26 +243,26 @@ int main() {
         std::cout << "0. Wyjscie" << std::endl;
         std::cout << "Wybor: ";
 
-        // Zabezpieczenie przed blednymi danymi (np. znakami zamiast liczb)
+        // Zabezpieczenie przed wpisaniem znaku zamiast liczby
         if (!(std::cin >> mainChoice)) {
             std::cin.clear();
             while (std::cin.get() != '\n');
-            mainChoice = -1; // Wartosc neutralna, aby menu wyswietlilo sie ponownie
+            mainChoice = -1;
             std::system("cls");
             continue;
         }
         std::system("cls");
         switch (mainChoice) {
-        case 1:
+        case 1: // Wybranie tablicy dynamicznej
             structureMenu<DynamicArray>("Tablica Dynamiczna");
             break;
-        case 2:
+        case 2: // Wybranie listy jednokierunkowej
             structureMenu<SingleLinkedList>("Lista Jednokierunkowa");
             break;
-        case 3:
+        case 3: // Wybranie listy dwukierunkowej
             structureMenu<DoubleLinkedList>("Lista Dwukierunkowa");
             break;
-        case 4: {
+        case 4: { // Ręczne generowanie pliku z danymi
             int sIdx, n; std::string name;
             std::cout << "Indeks seeda (0-9): "; std::cin >> sIdx;
             std::cout << "Liczba elementow: "; std::cin >> n;
@@ -265,8 +270,8 @@ int main() {
             generateTextFile(seeds[sIdx % 10], n, name);
             break;
         }
-        case 5:
-            runFullReport(seeds);
+        case 5: // Wykonywanie wszystkich badań
+            wszystkieBadania(seeds);
             break;
         case 0:
             std::cout << "Koniec programu." << std::endl;

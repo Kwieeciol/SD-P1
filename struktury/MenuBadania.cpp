@@ -51,8 +51,8 @@ void generateTextFile(unsigned int seed, int size, std::string fileName) {
 
 // Funkcja mierząca czas wykonania konkretnej operacji
 template <typename T>
-long long measure(int size, Operation op, unsigned int seed, int repetitions) {
-    long long totalDuration = 0;
+int measure(int size, Operation op, unsigned int seed, int repetitions) {
+    int totalDuration = 0;
     for (int r = 0; r < repetitions; r++) {
         T ds;
         srand(seed);
@@ -95,7 +95,7 @@ void wszystkieBadania(const unsigned int seeds[10]) {
         // Wykonywanie badań dla wszystkich rozmiarów
         for (int i = 1; i <= 8; i++) {
             int N = i * 5000;
-            long long avgArr = 0, avgSing = 0, avgDoub = 0;
+            int avgArr = 0, avgSing = 0, avgDoub = 0;
             // Pętla przechodząca przez wszystkie seedy
             for (int s = 0; s < 10; s++) {
                 avgArr += measure<DynamicArray>(N, op, seeds[s], 10);
